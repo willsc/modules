@@ -23,8 +23,6 @@ variable "logging" {
 variable "dynamicsnippets" {
 }
 
-variable "request_settings" {
-}
 
 
 resource "fastly_service_v1" "service" {
@@ -54,24 +52,6 @@ dynamic "condition" {
 }
 
 
-dynamic "request_setting" {
-   for_each = var.request_settings
-   content {
-      name              = request_setting.value.name
-      request_condition = request_setting.value.request_condition
-      max_stale_age     = request_setting.value.max_stale_age
-      force_miss        = request_setting.value.force_miss
-      force_ssl         = request_setting.value.force_ssl
-      action            = request_setting.value.action
-      bypass_busy_wait  = request_setting.value.bypass_busy_wait
-      hash_keys         = request_setting.value.hash_keys
-      xff               = request_setting.value.xff
-      timer_support     = request_setting.value.timer_support
-      geo_headers       = request_setting.value.geo_headers
-      default_host      = request_setting.value.default_host
-   }
-}
-      
 
 
 
