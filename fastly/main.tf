@@ -1,0 +1,155 @@
+provider "fastly" {
+  api_key = "JlxKkOP3k0Y-UM1QKOcOfkyKuMZ6lrDD"
+}
+
+variable "name" {
+}
+
+variable "domains" {
+}
+
+variable "backends" {
+}
+
+variable "conditions" {
+}
+
+variable "response_objects" { 
+}
+
+variable "logging" {
+}
+
+variable "dynamicsnippets" {
+}
+
+variable "request_settings" {
+}
+
+
+resource "fastly_service_v1" "service" {
+  name = var.name
+  dynamic "domain" {
+    for_each = var.domains
+    content {
+      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
+      # which keys might be set in maps assigned here, so it has
+      # produced a comprehensive set here. Consider simplifying
+      # this after confirming which keys can be set in practice.
+
+      comment = lookup(domain.value, "comment", null)
+      name    = domain.value.name
+    }
+  }
+
+dynamic "condition" {
+  for_each = var.conditions
+  content {
+    name              = condition.value.name
+    priority          = lookup(condition.value, "priority", null)
+    statement         = condition.value.statement
+    type              = condition.value.type
+
+  }
+}
+
+
+dynamic "request_setting" {
+   for_each = var.request_settings
+   content {
+      name              = request_setting.value.name
+      request_condition = request_setting.value.request_condition
+      max_stale_age     = request_setting.value.max_stale_age
+      force_miss        = request_setting.value.force_miss
+      force_ssl         = request_setting.value.force_ssl
+      action            = request_setting.value.action
+      bypass_busy_wait  = request_setting.value.bypass_busy_wait
+      hash_keys         = request_setting.value.hash_keys
+      xff               = request_setting.value.xff
+      timer_support     = request_setting.value.timer_support
+      geo_headers       = request_setting.value.geo_headers
+      default_host      = request_setting.value.default_host
+   }
+}
+      
+
+
+
+
+dynamic "dynamicsnippet" {
+  for_each = var.dynamicsnippets 
+  content {
+    name              = dynamicsnippet.value.name
+    priority          = lookup(dynamicsnippet.value, "priority", null)
+    type              = dynamicsnippet.value.type
+  }
+}
+
+dynamic "response_object" {
+  for_each = var.response_objects
+  content {
+     name              = response_object.value.name
+     response          = response_object.value.response
+     status            = response_object.value.status
+     content           = response_object.value.content
+     content_type      = response_object.value.content_type
+     request_condition = response_object.value.request_condition
+  }
+}
+
+
+ dynamic "backend" {
+    for_each = var.backends
+    content {
+      # TF-UPGRADE-TODO: The automatic upgrade tool can't predict
+      # which keys might be set in maps assigned here, so it has
+      # produced a comprehensive set here. Consider simplifying
+      # this after confirming which keys can be set in practice.
+
+      address               = backend.value.address
+      auto_loadbalance      = lookup(backend.value, "auto_loadbalance", null)
+      between_bytes_timeout = lookup(backend.value, "between_bytes_timeout", null)
+      connect_timeout       = lookup(backend.value, "connect_timeout", null)
+      error_threshold       = lookup(backend.value, "error_threshold", null)
+      first_byte_timeout    = lookup(backend.value, "first_byte_timeout", null)
+      healthcheck           = lookup(backend.value, "healthcheck", null)
+      max_conn              = lookup(backend.value, "max_conn", null)
+      max_tls_version       = lookup(backend.value, "max_tls_version", null)
+      min_tls_version       = lookup(backend.value, "min_tls_version", null)
+      name                  = backend.value.name
+      override_host         = lookup(backend.value, "override_host", null)
+      port                  = lookup(backend.value, "port", null)
+      request_condition     = lookup(backend.value, "request_condition", null)
+      shield                = lookup(backend.value, "shield", null)
+      ssl_ca_cert           = lookup(backend.value, "ssl_ca_cert", null)
+      ssl_cert_hostname     = lookup(backend.value, "ssl_cert_hostname", null)
+      ssl_check_cert        = lookup(backend.value, "ssl_check_cert", null)
+      ssl_ciphers           = lookup(backend.value, "ssl_ciphers", null)
+      ssl_client_cert       = lookup(backend.value, "ssl_client_cert", null)
+      ssl_client_key        = lookup(backend.value, "ssl_client_key", null)
+      ssl_hostname          = lookup(backend.value, "ssl_hostname", null)
+      ssl_sni_hostname      = lookup(backend.value, "ssl_sni_hostname", null)
+      use_ssl               = lookup(backend.value, "use_ssl", null)
+      weight                = lookup(backend.value, "weight", null)
+    }
+  }
+
+ dynamic "syslog" {
+   for_each = var.logging
+   content {
+   
+      name                     = syslog.value.name
+      address                  = syslog.value.address
+      port                     = lookup(syslog.value, "port", null)
+      format                   = lookup(syslog.value, "format", null)
+      format_version           = lookup(syslog.value, "format_version", null)
+      token                    = lookup(syslog.value, "token", null)
+      use_tls                  = lookup(syslog.value, "use_ssl", null)
+      tls_hostname             = lookup(syslog.value, "tls_hostname", null)
+      tls_ca_cert              = lookup(syslog.value, "tls_ca_cert", null)
+      response_condition       = lookup(syslog.value, "response_condition", null)
+      message_type             = lookup(syslog.value, "message_type", null)
+   } 
+  }
+}
+
